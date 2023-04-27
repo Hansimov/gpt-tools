@@ -1,4 +1,3 @@
-#%%
 import os
 import json
 from pathlib import Path
@@ -81,7 +80,9 @@ class Translater:
     ):
         self.model = model
         if task == "paper-en":
-            self.system_message = "你是一个学术论文翻译器。你的任务是将给定的中文翻译成英文。你的翻译应当是严谨的和自然的。请勿修改、添加和删除原文中的任何文本和标点。请遵循前述要求，翻译下面这段文字："
+            self.system_message = (
+                "你是一个学术翻译专家。你的任务是将给定的英文如实翻译成中文。你的翻译应当是严谨的和自然的，不要删改原文。请按照要求翻译下面的文本："
+            )
         self.original_text = original_text
 
     def run(self):

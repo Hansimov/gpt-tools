@@ -1,9 +1,9 @@
 #%%
 import sys
+from pathlib import Path
 
 sys.path.append(Path(__file__).parent)
 from datetime import datetime
-from pathlib import Path
 from utils import Translater
 
 # python -m pip install --upgrade arxiv
@@ -48,13 +48,14 @@ class PaperAbstracter:
         paper.run()
 
         title_zh = self.translate(paper.title).replace("。", "")
-        abstract_zh = self.translate(paper.abstract)
+        abstract_zh = self.translate(paper.abstract).replace("。", "。\n")
 
         publish_date_str = str(paper.publish_date)[:10]
         update_date_str = str(paper.update_date)[:10]
-        publish_update_str = f"{publish_date_str}提交"
+        publish_update_str = f"提交于{publish_date_str}"
         if paper.publish_date != paper.update_date:
-            publish_update_str += f"，{update_date_str}更新"
+            publish_update_str += f"，更新于{update_date_str}"
+
         today_str = str(datetime.now())[:10]
 
         sharing_text = (
@@ -62,7 +63,7 @@ class PaperAbstracter:
             f"【论文分享】{title_zh}\n"
             f"{paper.title}\n"
             f"\n"
-            f"* [{self.id}]: {publish_update_str}，{today_str}分享\n"
+            f"* [{self.id}]: {publish_update_str}\n"
             f"* arXiv: {paper.arxiv_url}\n"
             f"* PDF: {paper.pdf_url}\n"
             f"* Web: {paper.web_url}\n"
@@ -74,7 +75,9 @@ class PaperAbstracter:
 
 
 if __name__ == "__main__":
-    paper_id = "2206.10305"
+    # paper_id = "2206.10305"
     paper_id = "2304.13712"
+    # paper_id = "2304.13723"
+    paper_id = "2304.13714"
     paper_abstracter = PaperAbstracter(paper_id)
     paper_abstracter.run()
