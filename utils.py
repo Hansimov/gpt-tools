@@ -100,11 +100,9 @@ class Translater:
         return self.translated_text
 
 
-translater = Translater(
-    'Recent advances in conditional generative image models have enabled impressive results. On the one hand, text-based conditional models have achieved remarkable generation quality, by leveraging large-scale datasets of image-text pairs. To enable fine-grained controllability, however, text-based models require long prompts, whose details may be ignored by the model. On the other hand, layout-based conditional models have also witnessed significant advances. These models rely on bounding boxes or segmentation maps for precise spatial conditioning in combination with coarse semantic labels. The semantic labels, however, cannot be used to express detailed appearance characteristics. In this paper, we approach fine-grained scene controllability through image collages which allow a rich visual description of the desired scene as well as the appearance and location of the objects therein, without the need of class nor attribute labels. We introduce "mixing and matching scenes" (M&Ms), an approach that consists of an adversarially trained generative image model which is conditioned on appearance features and spatial positions of the different elements in a collage, and integrates these into a coherent image. We train our model on the OpenImages (OI) dataset and evaluate it on collages derived from OI and MS-COCO datasets. Our experiments on the OI dataset show that M&Ms outperforms baselines in terms of fine-grained scene controllability while being very competitive in terms of image quality and sample diversity. On the MS-COCO dataset, we highlight the generalization ability of our model by outperforming DALL-E in terms of the zero-shot FID metric, despite using two magnitudes fewer parameters and data. Collage based generative models have the potential to advance content creation in an efficient and effective way as they are intuitive to use and yield high quality generations.'
-)
-# 最近，条件生成图像模型的进展取得了令人瞩目的成果。一方面，基于文本的条件模型通过利用大规模的图像-文本对数据集，实现了卓越的生成质量。然而，为了实现细粒度的可控性，基于文本的模型需要长的提示语，而模型可能会忽略其中的细节。另一方面，基于布局的条件模型也取得了显著的进展。这些模型依赖于边界框或分割图，以实现精确的空间条件，结合粗略的语义标签。然而，语义标签无法表达详细的外观特征。本文通过图像拼贴来实现细粒度场景可控性，这允许对所需场景以及其中对象的外观和位置进行丰富的视觉描述，而无需使用类别或属性标签。我们引入了“混合和匹配场景”（M&Ms）的方法，该方法由一个对抗训练的生成图像模型组成，该模型基于拼贴中不同元素的外观特征和空间位置进行条件，并将它们整合成一个连贯的图像。我们在OpenImages（OI）数据集上训练我们的模型，并在从OI和MS-COCO数据集派生的拼贴上进行评估。我们在OI数据集上的实验表明，M&Ms在细粒度场景可控性方面优于基线模型，同时在图像质量和样本多样性方面也非常有竞争力。在MS-COCO数据集上，我们通过使用两个数量级更少的参数和数据，在零样本FID指标方面优于DALL-E，突显了我们模型的泛化能力。基于拼贴的生成模型具有提高内容创作效率和效果的潜力，因为它们易于使用且产生高质量的生成物。
-
 if __name__ == "__main__":
+    translater = Translater(
+        "Evaluation of GPT-3.5 and GPT-4 for supporting real-world information needs in healthcare delivery"
+    )
     translater.run()
     print(translater.translated_text)
