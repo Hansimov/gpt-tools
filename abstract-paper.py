@@ -7,8 +7,16 @@ from utils import init_os_envs
 init_os_envs()
 
 
-class PaperAbstracter:
+class ArxivPaperFetcher:
     def __init__(self, paper_id):
+        pass
+
+    def translate(self):
+        pass
+
+
+class PaperAbstracter:
+    def __init__(self, paper_obj):
         pass
 
     def translate(self):
