@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import json
 from pathlib import Path
@@ -69,6 +70,49 @@ System messages
 
 
 """
+
+
+def days_to_readable_str(dt_days):
+    dt_months = dt_days // 30
+    dt_years = dt_days // 365
+    duration_str = ""
+    if dt_years > 0:
+        year_str = "年"
+        duration_str = f"{dt_years}{year_str}"
+    elif dt_months > 0:
+        month_str = "月"
+        duration_str = f"{dt_months}{month_str}"
+    else:
+        if dt_days == 0:
+            duration_str = "今天"
+        else:
+            day_str = "天"
+            duration_str = f"{dt_days}{day_str}"
+
+    return duration_str
+
+
+def date_duration(date_str):
+    now = datetime.now()
+    date_format_list = [
+        "%Y-%m-%d",
+    ]
+    date = None
+    for date_format in date_format_list:
+        try:
+            date = datetime.strptime(date_str, date_format)
+            break
+        except:
+            continue
+    if date is None:
+        raise ValueError
+
+    dt = now - date
+    duration_str = days_to_readable_str(dt.days)
+
+    if dt.days > 0:
+        duration_str += "前"
+    return dt.days, duration_str
 
 
 class Translater:

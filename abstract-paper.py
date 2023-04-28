@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.append(Path(__file__).parent)
 from datetime import datetime
-from utils import Translater
+from utils import Translater, date_duration
 
 # python -m pip install --upgrade arxiv
 import arxiv
@@ -47,28 +47,34 @@ class PaperAbstracter:
         paper = ArxivPaper(self.id)
         paper.run()
 
-        title_zh = self.translate(paper.title).replace("。", "")
+        title_zh = self.translate(paper.title)
+        for ch in ["。", "《", "》"]:
+            title_zh = title_zh.replace(ch, "")
         abstract_zh = self.translate(paper.abstract).replace("。", "。\n")
 
         publish_date_str = str(paper.publish_date)[:10]
         update_date_str = str(paper.update_date)[:10]
-        publish_update_str = f"提交于{publish_date_str}"
-        if paper.publish_date != paper.update_date:
-            publish_update_str += f"，更新于{update_date_str}"
 
         today_str = str(datetime.now())[:10]
+        publish_duration_str = date_duration(publish_date_str)[1]
+        update_duration_str = date_duration(update_date_str)[1]
+
+        publish_update_str = f"提交于{publish_date_str}（{publish_duration_str}）"
+        if paper.publish_date != paper.update_date:
+            publish_update_str += f"，更新于{update_date_str}（{update_duration_str}）"
 
         sharing_text = (
             f"\n"
             f"【论文分享】{title_zh}\n"
-            f"{paper.title}\n"
             f"\n"
+            f"{paper.title}\n"
             f"* [{self.id}]: {publish_update_str}\n"
+            f"\n"
+            f"【摘要】\n{abstract_zh}\n"
             f"* arXiv: {paper.arxiv_url}\n"
             f"* PDF: {paper.pdf_url}\n"
             f"* Web: {paper.web_url}\n"
-            f"\n"
-            f"【摘要】\n{abstract_zh}\n"
+            f"* Hots: \n"
             f"\n"
         )
         print(sharing_text)
@@ -77,7 +83,9 @@ class PaperAbstracter:
 if __name__ == "__main__":
     # paper_id = "2206.10305"
     paper_id = "2304.13712"
+    # paper_id = "2304.13714"
     # paper_id = "2304.13723"
-    paper_id = "2304.13714"
+    paper_id = "2304.13664"
+    paper_id = "2304.12210"
     paper_abstracter = PaperAbstracter(paper_id)
     paper_abstracter.run()
