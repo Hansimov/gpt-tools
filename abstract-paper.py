@@ -8,6 +8,7 @@ from utils import Translater, date_duration
 
 # python -m pip install --upgrade arxiv
 import arxiv
+import argparse
 
 
 class ArxivPaper:
@@ -80,12 +81,16 @@ class PaperAbstracter:
         print(sharing_text)
 
 
+class ArgParser(argparse.ArgumentParser):
+    def __init__(self, *args, **kwargs):
+        super(ArgParser, self).__init__(*args, **kwargs)
+        self.add_argument("-i", "--paper-id", type=str, help="arXiv paper ID")
+        self.args = self.parse_args(sys.argv[1:])
+
+
 if __name__ == "__main__":
-    # paper_id = "2206.10305"
-    paper_id = "2304.13712"
-    # paper_id = "2304.13714"
-    # paper_id = "2304.13723"
-    paper_id = "2304.13664"
-    paper_id = "2304.12210"
+    arg_parser = ArgParser()
+    args = arg_parser.args
+    paper_id = "2304.12210" if args.paper_id is None else args.paper_id
     paper_abstracter = PaperAbstracter(paper_id)
     paper_abstracter.run()
