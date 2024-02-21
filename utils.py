@@ -4,20 +4,21 @@ import json
 from pathlib import Path
 
 # python -m pip install --upgrade openai
-import openai
+from openai import OpenAI
 
 
 def init_os_envs():
     with open(Path(__file__).parent / "secrets.json", "r") as rf:
         secrets = json.load(rf)
-    os.environ["OPENAI_API_KEY"] = secrets["openai_api_key"]
+    os.environ["ENDPOINT"] = secrets["endpoint"]
+    os.environ["API_KEY"] = secrets["api_key"]
 
-    for proxy_env in ["http_proxy", "https_proxy"]:
-        os.environ[proxy_env] = secrets["http_proxy"]
+    if "http_proxy" in secrets:
+        for proxy_env in ["http_proxy", "https_proxy"]:
+            os.environ[proxy_env] = secrets["http_proxy"]
 
 
 init_os_envs()
-openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
 """
@@ -119,29 +120,44 @@ class Translater:
     def __init__(
         self,
         original_text,
-        model="gpt-3.5-turbo",
+        model="nous-mixtral-8x7b",
         task="paper-en",
     ):
         self.model = model
         if task == "paper-en":
-            self.system_message = (
-                "你是一个学术翻译专家。你的任务是将给定的英文如实翻译成中文。你的翻译应当是严谨的和自然的，不要删改原文。请按照要求翻译下面的文本："
-            )
+            self.system_message = "你是一个学术翻译专家。你的任务是将给定的英文如实翻译成中文。你的翻译应当是严谨的和自然的，不要删改原文，不需要注释。请按照要求仅仅翻译下面的文本："
         self.original_text = original_text
 
     def run(self):
-        response = openai.ChatCompletion.create(
+        openai_client = OpenAI(
+            base_url=os.environ["ENDPOINT"], api_key=os.environ["API_KEY"]
+        )
+        response = openai_client.chat.completions.create(
             model=self.model,
             messages=[
                 {
+                    "role": "system",
+                    "content": self.system_message,
+                },
+                {
                     "role": "user",
-                    "content": self.system_message + self.original_text,
+                    "content": f"```\n{self.original_text}\n```",
                 },
             ],
-            temperature=0,
+            stream=True,
         )
 
-        self.translated_text = response["choices"][0]["message"]["content"]
+        self.translated_text = ""
+        for chunk in response:
+            if chunk.choices[0].delta.content is not None:
+                delta_content = chunk.choices[0].delta.content
+                print(delta_content, end="", flush=True)
+                self.translated_text += delta_content
+            elif chunk.choices[0].finish_reason == "stop":
+                print("[STOP]")
+            else:
+                pass
+
         return self.translated_text
 
 
